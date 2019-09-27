@@ -1,0 +1,46 @@
+on: [push, pull_request]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: azure/actions/login@master
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    #- name: create resources
+    #  run: |
+        # create resource group
+        # create database in postgresSQL
+        # az postgres server create --name <SerevrName> --resource-group <rgName> --location <location> --admin-user <username> --admin-password ${{ secrets.password}} --sku-name GP_Gen5_4
+        # az postgres server firewall-rule create --name "AllowAllWindowsAzureIps" --start-ip-address "0.0.0.0" --end-ip-address "0.0.0.0" -g <rgName> -s <SerevrName>
+
+        # create webapp with appropriate app setting
+        # az appservice plan create --name <appserviceplan> --resource-group <rgName> --sku FREE
+        # az webapp create -g <rgName> -p <appserviceplan> -n <webAppName> --runtime "node|10.6"
+        # az webapp config appsettings set -g <rgName> -n <webAppName> --settings PGUSER=suaggar@<SerevrName> PGPASSWORD=${{ secrets.password}} PGSERVER="<SerevrName>.postgres.database.azure.com" PGDATABASE="postgres"
+
+    # checkout the repo
+    - uses: actions/checkout@master
+    
+    # install dependencies, build, and test
+    # - name: Setup Node 10.x
+    #   uses: actions/setup-node@v1
+    #   with:
+    #     node-version: '10.x' # Replace with specific Node version : 8.x, 10.x, 12.x
+
+    # - name: zip package
+    #   run: |
+    #     zip -r myapp.zip . -x *.git*
+
+    - name: 'Run Azure webapp deploy action'
+      uses: azure/webapps-deploy@v1
+      with: 
+        app-name: actionsdemosa # Replace with your app name
+        package: './Application'
+
+    # Azure logout 
+    - name: logout
+      run: |
+        az logout
