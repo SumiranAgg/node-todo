@@ -32,7 +32,7 @@ jobs:
 
     # - name: zip package
     #   run: |
-    #     zip -r myapp.zip . -x *.git*
+    #     zip -r myapp.zip . -x *.git* d
 
     - name: 'Run Azure webapp deploy action'
       uses: azure/webapps-deploy@v1
